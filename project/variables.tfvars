@@ -1,0 +1,4 @@
+# Set variables
+
+location = "westeurope"
+
