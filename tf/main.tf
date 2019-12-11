@@ -16,8 +16,8 @@ module "vnet-apid" {
   source = "./modules/vnet-aci"
   name = "apid"
   resource-group = azurerm_resource_group.poc-netop-rg.name
-  vnet-cidr = "10.1.0.0/16"
-  subnet-cidr = "10.1.1.0/24"
+  vnet-cidr = var.apid-vnet-cidr
+  subnet-cidr = var.apid-subnet-cidr
   location = var.location
 }
 
@@ -27,6 +27,7 @@ module "apid-aci" {
   resource-group = azurerm_resource_group.poc-netop-rg.name
   location = var.location
   subnet-id = module.vnet-apid.subnet-id
+  appgw-fe-private-ip = var.apid-appgw-private-ip
   container-name = "helloworld"
   container-image = "mcr.microsoft.com/azuredocs/aci-helloworld"
   container-cpu = "0.5"
@@ -39,8 +40,8 @@ module "appgw-apid" {
   resource-group = azurerm_resource_group.poc-netop-rg.name
   location = var.location
   vnet-name = module.vnet-apid.vnet-name
-  subnet-cidr = "10.1.2.0/28"
-  fe-private-ip = "10.1.2.10"
+  subnet-cidr = var.apid-appgw-subnet-cidr
+  fe-private-ip = var.apid-appgw-private-ip
   listener = "public"
   backend-ip = module.apid-aci.ip-address
 }

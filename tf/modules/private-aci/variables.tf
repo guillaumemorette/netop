@@ -8,6 +8,7 @@ variable location {}
 variable resource-group {}
 
 variable subnet-id {}
+variable appgw-fe-private-ip {}
 
 variable container-name {}
 variable container-image {}
