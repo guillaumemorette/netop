@@ -25,3 +25,7 @@ variable backend-ip {
 variable fe-private-ip {
   description = "The Front End private IP"
 }
+
+variable listener {
+  description = "public if the app gateway listen on the public IP, private if the app gateway listen on the private IP"
+}

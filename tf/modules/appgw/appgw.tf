@@ -34,7 +34,7 @@ resource "azurerm_application_gateway" "network" {
 
   sku {
     name     = "Standard_v2"
-    tier     = "Standard"
+    tier     = "Standard_v2"
     capacity = 1
   }
   
@@ -49,11 +49,19 @@ resource "azurerm_application_gateway" "network" {
   }
 
   frontend_ip_configuration {
-    name                          = "FrontEnd-IP-Config"
-    public_ip_address_id          = azurerm_public_ip.public-fe.id
-    private_ip_address            = var.fe-private-ip
-    subnet_id		                  = azurerm_subnet.gw-subnet.id
-    private_ip_address_allocation = "Static"
+    name                          = "ingress-ip-config"
+    public_ip_address_id          = var.listener == "public" ? azurerm_public_ip.public-fe.id : ""
+    private_ip_address            = var.listener == "private" ? var.fe-private-ip : ""
+    subnet_id		                  = var.listener == "private" ? azurerm_subnet.gw-subnet.id : ""
+    private_ip_address_allocation = var.listener == "private" ? "Static" : "Dynamic"
+  }
+
+  frontend_ip_configuration {
+    name                          = "egress-ip-config"
+    public_ip_address_id          = var.listener == "private" ? azurerm_public_ip.public-fe.id : ""
+    private_ip_address            = var.listener == "public" ? var.fe-private-ip : ""
+    subnet_id		                  = var.listener == "public" ? azurerm_subnet.gw-subnet.id : ""
+    private_ip_address_allocation = var.listener == "public" ? "Static" : "Dynamic"
   }
 
   /* One block per backend */
@@ -72,7 +80,7 @@ resource "azurerm_application_gateway" "network" {
 
   http_listener {
     name                           = local.listener-name
-    frontend_ip_configuration_name = "FrontEnd-IP-Config"
+    frontend_ip_configuration_name = "ingress-ip-config"
     frontend_port_name             = "FrontEnd-Port"
     protocol                       = "Http"
   }

@@ -12,7 +12,7 @@ resource "azurerm_resource_group" "poc-netop-rg" {
 
 #### APID RESOURCES ###
 
-module "vnet-aci" {
+module "vnet-apid" {
   source = "./modules/vnet-aci"
   name = "apid"
   resource-group = azurerm_resource_group.poc-netop-rg.name
@@ -21,12 +21,12 @@ module "vnet-aci" {
   location = var.location
 }
 
-module "private-aci" {
+module "apid-aci" {
   source = "./modules/private-aci"
   name = "apid-aci"
   resource-group = azurerm_resource_group.poc-netop-rg.name
   location = var.location
-  subnet-id = module.vnet-aci.subnet-id
+  subnet-id = module.vnet-apid.subnet-id
   container-name = "helloworld"
   container-image = "mcr.microsoft.com/azuredocs/aci-helloworld"
   container-cpu = "0.5"
@@ -38,10 +38,11 @@ module "appgw-apid" {
   name = "apid-gw"
   resource-group = azurerm_resource_group.poc-netop-rg.name
   location = var.location
-  vnet-name = module.vnet-aci.vnet-name
+  vnet-name = module.vnet-apid.vnet-name
   subnet-cidr = "10.1.2.0/28"
   fe-private-ip = "10.1.2.10"
-  backend-ip = "10.1.1.1"
+  listener = "public"
+  backend-ip = module.apid-aci.ip-address
 }
 
 
