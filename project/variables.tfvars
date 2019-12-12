@@ -12,7 +12,7 @@ apid-appgw-subnet-cidr = "10.1.2.0/28"
 
 apid-appgw-private-ip = "10.1.2.10"
 
-apid-target-host = "hello.aci1.apid.vnet-tribe.afa.azure.intraxa"
+apid-target-host = "hello.aci1.apid.vnet-tribe.afa.azure.extraxa"
 
 
 #### AFA definition ###
@@ -25,6 +25,7 @@ afa-appgw-subnet-cidr = "10.1.2.0/28"
 
 afa-appgw-private-ip = "10.1.2.10"
 
+afa-dns-zone-name = "afa.azure.extraxa"
 
-
+afa-dns-record-name = "*.vnet-tribe"
 

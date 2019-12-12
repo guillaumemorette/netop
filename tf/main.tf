@@ -80,5 +80,13 @@ module "appgw-afa" {
   target-host = var.apid-target-host
 }
 
+module "afa-dns" {
+  source = "./modules/dns-zone"
+  resource-group = azurerm_resource_group.poc-netop-rg.name
+  vnet-id = module.vnet-afa.vnet-id
+  dns-zone-name = var.afa-dns-zone-name
+  dns-record-name = var.afa-dns-record-name
+  dns-record-ip = var.afa-appgw-private-ip
+}
 
 

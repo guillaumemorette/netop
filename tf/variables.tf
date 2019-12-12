@@ -15,3 +15,10 @@ variable afa-subnet-cidr {}
 variable afa-appgw-subnet-cidr {}
 variable afa-appgw-private-ip {}
 
+variable afa-dns-zone-name {
+    description = "The DNS zone name for the afa vnet"
+}
+
+variable afa-dns-record-name {
+    description = "The wildcard A record to redirect to the App Gateway private IP"
+}
