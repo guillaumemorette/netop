@@ -2,7 +2,7 @@
 
 
 resource "azurerm_network_interface" "main" {
-  name                = "${var.prefix}-nic"
+  name                = join("-",[var.prefix,"nic"])
   location            = var.location
   resource_group_name = var.resource-group
 
@@ -14,7 +14,7 @@ resource "azurerm_network_interface" "main" {
 }
 
 resource "azurerm_virtual_machine" "main" {
-  name                  = "${var.prefix}-vm"
+  name                  = join("-",[var.prefix,"vm"])
   location              = var.location
   resource_group_name   = var.resource-group
   network_interface_ids = [azurerm_network_interface.main.id]
@@ -33,13 +33,13 @@ resource "azurerm_virtual_machine" "main" {
     version   = "latest"
   }
   storage_os_disk {
-    name              = "${var.prefix}-disk"
+    name              = join("-",[var.prefix,"disk"])
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
   os_profile {
-    computer_name  = "${var.prefix}-vm"
+    computer_name  = join("-",[var.prefix,"vm"])
     admin_username = "gm"
     admin_password = "Password1234!"
   }

@@ -29,3 +29,7 @@ variable fe-private-ip {
 variable listener {
   description = "public if the app gateway listen on the public IP, private if the app gateway listen on the private IP"
 }
+
+variable target-host {
+  description = "the host name to redirect"
+}

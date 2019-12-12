@@ -44,29 +44,41 @@ module "appgw-apid" {
   fe-private-ip = var.apid-appgw-private-ip
   listener = "public"
   backend-ip = module.apid-aci.ip-address
+  target-host = var.apid-target-host
 }
 
 
 #### AFA RESOURCES ####
-/*
-module "vnet-vm" {
+
+module "vnet-afa" {
   source = "./modules/vnet-vm"
-  name = "AFA"
+  name = "afa"
   resource-group = azurerm_resource_group.poc-netop-rg.name
-  vnet-cidr = "10.1.0.0/16"
-  subnet-cidr = "10.1.1.0/24"
+  vnet-cidr = var.afa-vnet-cidr
+  subnet-cidr = var.afa-subnet-cidr
   location = var.location
 }
 
 module "vm" {
   source = "./modules/vm"
-  prefix = "AFA"
+  prefix = "afa"
   location = var.location
   resource-group = azurerm_resource_group.poc-netop-rg.name
-  subnet-id = module.vnet-vm.subnet-id
+  subnet-id = module.vnet-afa.subnet-id
 }
-*/
 
+module "appgw-afa" {
+  source = "./modules/appgw"
+  name = "afa-gw"
+  resource-group = azurerm_resource_group.poc-netop-rg.name
+  location = var.location
+  vnet-name = module.vnet-afa.vnet-name
+  subnet-cidr = var.afa-appgw-subnet-cidr
+  fe-private-ip = var.afa-appgw-private-ip
+  listener = "private"
+  backend-ip = module.appgw-apid.public-ip
+  target-host = var.apid-target-host
+}
 
 
 

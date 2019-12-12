@@ -83,6 +83,7 @@ resource "azurerm_application_gateway" "network" {
     frontend_ip_configuration_name = "ingress-ip-config"
     frontend_port_name             = "FrontEnd-Port"
     protocol                       = "Http"
+    host_name                      = var.target-host
   }
 
   request_routing_rule {
