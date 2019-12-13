@@ -18,8 +18,12 @@ variable subnet-cidr {
   description = "app gateway dedicated subnet cidr"
 }
 
-variable backend-ip {
-  description = "Backend IP to redirect flows"
+variable backend-ips {
+  description = "List Backend IP to redirect flows"
+}
+
+variable backend-fqdns {
+  description = "List FQDN to redirect flows"
 }
 
 variable fe-private-ip {

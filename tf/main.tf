@@ -43,10 +43,10 @@ module "appgw-apid" {
   subnet-cidr = var.apid-appgw-subnet-cidr
   fe-private-ip = var.apid-appgw-private-ip
   listener = "public"
-  backend-ip = module.apid-aci.ip-address
+  backend-ips = [module.apid-aci.ip-address]
+  backend-fqdns = null
   target-host = var.apid-target-host
 }
-
 
 #### AFA RESOURCES ####
 
@@ -76,9 +76,11 @@ module "appgw-afa" {
   subnet-cidr = var.afa-appgw-subnet-cidr
   fe-private-ip = var.afa-appgw-private-ip
   listener = "private"
-  backend-ip = module.appgw-apid.public-ip
+  backend-ips = [module.appgw-apid.public-ip]
+  backend-fqdns = null 
   target-host = var.apid-target-host
 }
+
 
 module "afa-dns" {
   source = "./modules/dns-zone"
@@ -88,5 +90,3 @@ module "afa-dns" {
   dns-record-name = var.afa-dns-record-name
   dns-record-ip = var.afa-appgw-private-ip
 }
-
-

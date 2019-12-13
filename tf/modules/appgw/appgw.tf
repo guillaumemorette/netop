@@ -66,15 +66,17 @@ resource "azurerm_application_gateway" "network" {
 
   /* One block per backend */
   backend_address_pool {
-    name         = "BackendIP"
-    ip_addresses = [var.backend-ip]
+    name         = "BackendPool"
+    ip_addresses = var.backend-ips
+    fqdns        = var.backend-fqdns
   }
-
+  
   backend_http_settings {
     name                  = "BackendHTTPSettings"
     cookie_based_affinity = "Disabled"
     port                  = 80
     protocol              = "Http"
+    host_name             = var.target-host
     request_timeout       = 5
   }
 
@@ -90,7 +92,7 @@ resource "azurerm_application_gateway" "network" {
     name                       = join("-", [var.name,"routing_rule"])
     rule_type                  = "Basic"
     http_listener_name         = local.listener-name
-    backend_address_pool_name  = "BackendIP"
+    backend_address_pool_name  = "BackendPool"
     backend_http_settings_name = "BackendHTTPSettings"
   }
 
