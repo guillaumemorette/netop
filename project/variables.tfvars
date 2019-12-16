@@ -29,3 +29,4 @@ afa-dns-zone-name = "afa.azure.extraxa"
 
 afa-dns-record-name = "*.vnet-tribe"
 
+afa-bastion-cidr = "10.1.3.0/27"

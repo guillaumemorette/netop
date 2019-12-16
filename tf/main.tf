@@ -67,6 +67,14 @@ module "vm" {
   subnet-id = module.vnet-afa.subnet-id
 }
 
+module "bastion" {
+  source = "./modules/bastion"
+  location = var.location
+  resource-group = azurerm_resource_group.poc-netop-rg.name
+  vnet-name = module.vnet-afa.vnet-name
+  subnet-prefix = var.afa-bastion-cidr
+}
+
 module "appgw-afa" {
   source = "./modules/appgw"
   name = "afa-gw"
@@ -81,7 +89,6 @@ module "appgw-afa" {
   target-host = var.apid-target-host
 }
 
-
 module "afa-dns" {
   source = "./modules/dns-zone"
   resource-group = azurerm_resource_group.poc-netop-rg.name
@@ -89,4 +96,12 @@ module "afa-dns" {
   dns-zone-name = var.afa-dns-zone-name
   dns-record-name = var.afa-dns-record-name
   dns-record-ip = var.afa-appgw-private-ip
+}
+
+module "firewall" {
+  source = "./modules/nsg"
+  resource-group = azurerm_resource_group.poc-netop-rg.name
+  location = var.location
+  gw-ip-address = module.appgw-afa.public-ip
+  subnet-id = module.appgw-apid.subnet-id
 }

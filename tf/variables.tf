@@ -22,3 +22,7 @@ variable afa-dns-zone-name {
 variable afa-dns-record-name {
     description = "The wildcard A record to redirect to the App Gateway private IP"
 }
+
+variable afa-bastion-cidr {
+    description = "The dedicated bastion cidr subnet"
+}
