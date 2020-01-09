@@ -48,6 +48,14 @@ module "appgw-apid" {
   target-host = var.apid-target-host
 }
 
+module "storage-apid" {
+  source = "./modules/storage"
+  location = var.location
+  resource-group = azurerm_resource_group.poc-netop-rg.name
+  storage-name = "gm47nginxstorage"
+  share-name = "nginxshare"
+}
+
 #### AFA RESOURCES ####
 
 module "vnet-afa" {
