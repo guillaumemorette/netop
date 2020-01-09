@@ -52,8 +52,8 @@ module "storage-apid" {
   source = "./modules/storage"
   location = var.location
   resource-group = azurerm_resource_group.poc-netop-rg.name
-  storage-name = "gm47nginxstorage"
-  share-name = "nginxshare"
+  storage-name = var.apid-storage-account-name
+  share-name = var.apid-storage-share-name
 }
 
 #### AFA RESOURCES ####
