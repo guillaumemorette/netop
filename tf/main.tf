@@ -32,6 +32,15 @@ module "apid-aci" {
   container-image = "mcr.microsoft.com/azuredocs/aci-helloworld"
   container-cpu = "0.5"
   container-memory = "1.5"
+  sidecar-name = "nginx"
+  sidecar-image = "nginx"
+  sidecar-cpu = "1.0"
+  sidecar-memory = "1.5"
+  sidecar-volume-name = "nginx-config"
+  sidecar-volume-mount-path = "/etc/nginx"
+  sidecar-volume-sa-name = var.apid-storage-account-name
+  sidecar-volume-sa-key = module.storage-apid.access-key
+  sidecar-volume-share-name = var.apid-storage-share-name
 }
 
 module "appgw-apid" {

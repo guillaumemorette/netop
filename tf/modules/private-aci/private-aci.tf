@@ -35,6 +35,27 @@ resource "azurerm_container_group" "netop-aci" {
 
   }
 
+  container {
+    name   = var.sidecar-name
+    image  = var.sidecar-image
+    cpu    = var.sidecar-cpu
+    memory = var.sidecar-memory
+
+    ports {
+      port     = 443
+      protocol = "TCP"
+    }
+ 
+    volume {
+      name = var.sidecar-volume-name
+      mount_path = var.sidecar-volume-mount-path
+      storage_account_name = var.sidecar-volume-sa-name
+      storage_account_key = var.sidecar-volume-sa-key
+      share_name = var.sidecar-volume-share-name
+    }
+
+  }
+
   network_profile_id = azurerm_network_profile.netop-np.id
 
 }
