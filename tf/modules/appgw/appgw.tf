@@ -45,7 +45,7 @@ resource "azurerm_application_gateway" "network" {
 
   frontend_port {
     name = "FrontEnd-Port"
-    port = 80
+    port = 443
   }
 
   frontend_ip_configuration {
@@ -74,8 +74,8 @@ resource "azurerm_application_gateway" "network" {
   backend_http_settings {
     name                  = "BackendHTTPSettings"
     cookie_based_affinity = "Disabled"
-    port                  = 80
-    protocol              = "Http"
+    port                  = 443
+    protocol              = "Https"
     host_name             = var.target-host
     request_timeout       = 5
   }
@@ -84,7 +84,7 @@ resource "azurerm_application_gateway" "network" {
     name                           = local.listener-name
     frontend_ip_configuration_name = "ingress-ip-config"
     frontend_port_name             = "FrontEnd-Port"
-    protocol                       = "Http"
+    protocol                       = "Https"
     host_name                      = var.target-host
   }
 
