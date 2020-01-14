@@ -1,7 +1,7 @@
 ### POC New Network Topology ###
 
 provider "azurerm" {
-  version = "1.37"
+  version = "1.40"
 }
 
 resource "azurerm_resource_group" "poc-netop-rg" {
@@ -55,6 +55,7 @@ module "appgw-apid" {
   backend-ips = [module.apid-aci.ip-address]
   backend-fqdns = null
   target-host = var.apid-target-host
+  backend-ca-certificate = "scripts/ssl.crt"
 }
 
 module "storage-apid" {
@@ -104,6 +105,7 @@ module "appgw-afa" {
   backend-ips = [module.appgw-apid.public-ip]
   backend-fqdns = null 
   target-host = var.apid-target-host
+  backend-ca-certificate = "ssl/appgw-ssl.crt"
 }
 
 module "afa-dns" {

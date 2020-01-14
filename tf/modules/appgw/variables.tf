@@ -37,3 +37,7 @@ variable listener {
 variable target-host {
   description = "the host name to redirect"
 }
+
+variable backend-ca-certificate {
+  description = "ca certificate filename from project directory, then like 'scripts/ssl.crt'"
+}

@@ -43,6 +43,17 @@ resource "azurerm_application_gateway" "network" {
     subnet_id = azurerm_subnet.gw-subnet.id
   }
 
+  ssl_certificate {
+    name     = "certificate"
+    data     = filebase64("ssl/appgw-cert.pfx")
+    password = "dacloud"
+  }
+
+  trusted_root_certificate {
+    name    = "backend-ca-cert"
+    data    = filebase64(var.backend-ca-certificate)
+  }
+
   frontend_port {
     name = "FrontEnd-Port"
     port = 443
@@ -72,12 +83,13 @@ resource "azurerm_application_gateway" "network" {
   }
   
   backend_http_settings {
-    name                  = "BackendHTTPSettings"
-    cookie_based_affinity = "Disabled"
-    port                  = 443
-    protocol              = "Https"
-    host_name             = var.target-host
-    request_timeout       = 5
+    name                       = "BackendHTTPSettings"
+    cookie_based_affinity      = "Disabled"
+    port                       = 443
+    protocol                   = "Https"
+    host_name                  = var.target-host
+    request_timeout            = 5
+    trusted_root_certificate_names = ["backend-ca-cert"]
   }
 
   http_listener {
@@ -85,6 +97,7 @@ resource "azurerm_application_gateway" "network" {
     frontend_ip_configuration_name = "ingress-ip-config"
     frontend_port_name             = "FrontEnd-Port"
     protocol                       = "Https"
+    ssl_certificate_name           = "certificate"
     host_name                      = var.target-host
   }
 
