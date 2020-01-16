@@ -54,8 +54,11 @@ module "appgw-apid" {
   listener = "public"
   backend-ips = [module.apid-aci.ip-address]
   backend-fqdns = null
+  pfx-certificate = "scripts/ssl.pfx"
+  pfx-password = "dacloud"
   target-host = var.apid-target-host
-  backend-ca-certificate = "scripts/ssl.crt"
+  backend-ca-certificate = "ssl/rootCA.crt"
+  probe-hostname = var.apid-target-host
 }
 
 module "storage-apid" {
@@ -103,9 +106,12 @@ module "appgw-afa" {
   fe-private-ip = var.afa-appgw-private-ip
   listener = "private"
   backend-ips = [module.appgw-apid.public-ip]
-  backend-fqdns = null 
+  backend-fqdns = null
+  pfx-certificate = "ssl/*.vnet-tribe.afa.azure.extraxa.pfx"
+  pfx-password = "dacloud"
   target-host = var.apid-target-host
-  backend-ca-certificate = "ssl/appgw-ssl.crt"
+  backend-ca-certificate = "ssl/rootCA.crt"
+  probe-hostname = "hello.aci1.apid.vnet-tribe.afa.azure.extraxa"
 }
 
 module "afa-dns" {

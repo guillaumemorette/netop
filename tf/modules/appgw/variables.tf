@@ -39,5 +39,17 @@ variable target-host {
 }
 
 variable backend-ca-certificate {
-  description = "ca certificate filename from project directory, then like 'scripts/ssl.crt'"
+  description = "trusted ca root certificate filename from project directory. ex: 'scripts/ssl.crt'"
+}
+
+variable pfx-certificate {
+  description = "pfx filename for the app gateway ssl termination. ex: 'ssl/appgw-cert.pfx'"
+}
+
+variable pfx-password {
+  description = "pfx file password"
+}
+
+variable probe-hostname {
+  description = "the backend probe hostname, wildcard not supported"
 }

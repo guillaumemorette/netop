@@ -43,12 +43,14 @@ resource "azurerm_application_gateway" "network" {
     subnet_id = azurerm_subnet.gw-subnet.id
   }
 
+  # SSL Termination certificate & key (pfx)
   ssl_certificate {
     name     = "certificate"
-    data     = filebase64("ssl/appgw-cert.pfx")
-    password = "dacloud"
+    data     = filebase64(var.pfx-certificate)
+    password = var.pfx-password
   }
 
+  # Trusted root certificate used for backend authentication (only in SKU V2)
   trusted_root_certificate {
     name    = "backend-ca-cert"
     data    = filebase64(var.backend-ca-certificate)
@@ -82,6 +84,16 @@ resource "azurerm_application_gateway" "network" {
     fqdns        = var.backend-fqdns
   }
   
+  probe {
+  host                = var.probe-hostname
+  interval            = 30
+  name                = "backend-probe"
+  protocol            = "https"
+  path                = "/"
+  timeout             = 5
+  unhealthy_threshold = 2
+  }
+
   backend_http_settings {
     name                       = "BackendHTTPSettings"
     cookie_based_affinity      = "Disabled"
@@ -90,6 +102,7 @@ resource "azurerm_application_gateway" "network" {
     host_name                  = var.target-host
     request_timeout            = 5
     trusted_root_certificate_names = ["backend-ca-cert"]
+    probe_name                 =  "backend-probe"
   }
 
   http_listener {
