@@ -37,3 +37,19 @@ variable listener {
 variable target-host {
   description = "the host name to redirect"
 }
+
+variable backend-ca-certificate {
+  description = "trusted ca root certificate filename from project directory. ex: 'scripts/ssl.crt'"
+}
+
+variable pfx-certificate {
+  description = "pfx filename for the app gateway ssl termination. ex: 'ssl/appgw-cert.pfx'"
+}
+
+variable pfx-password {
+  description = "pfx file password"
+}
+
+variable probe-hostname {
+  description = "the backend probe hostname, wildcard not supported"
+}

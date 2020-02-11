@@ -22,18 +22,41 @@ resource "azurerm_container_group" "netop-aci" {
   ip_address_type     = "private"
   os_type             = "Linux"
 
+
   container {
     name   = var.container-name
     image  = var.container-image
     cpu    = var.container-cpu
     memory = var.container-memory
-
+    
     ports {
       port     = 80
       protocol = "TCP"
     }
+  
+  }
+
+  container {
+    name   = var.sidecar-name
+    image  = var.sidecar-image
+    cpu    = var.sidecar-cpu
+    memory = var.sidecar-memory
+
+    ports {
+      port     = 443
+      protocol = "TCP"
+    }
+ 
+    volume {
+      name = var.sidecar-volume-name
+      mount_path = var.sidecar-volume-mount-path
+      storage_account_name = var.sidecar-volume-sa-name
+      storage_account_key = var.sidecar-volume-sa-key
+      share_name = var.sidecar-volume-share-name
+    }
 
   }
+  
 
   network_profile_id = azurerm_network_profile.netop-np.id
 
@@ -52,6 +75,18 @@ resource "azurerm_network_security_group" "aci-sg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "80"
+    source_address_prefix      = var.appgw-fe-private-ip
+    destination_address_prefix = azurerm_container_group.netop-aci.ip_address
+  }
+
+  security_rule {
+    name                       = "AllowFromAppGatewaySSL"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
     source_address_prefix      = var.appgw-fe-private-ip
     destination_address_prefix = azurerm_container_group.netop-aci.ip_address
   }

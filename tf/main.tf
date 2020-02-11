@@ -1,7 +1,7 @@
 ### POC New Network Topology ###
 
 provider "azurerm" {
-  version = "1.37"
+  version = "1.40"
 }
 
 resource "azurerm_resource_group" "poc-netop-rg" {
@@ -32,6 +32,15 @@ module "apid-aci" {
   container-image = "mcr.microsoft.com/azuredocs/aci-helloworld"
   container-cpu = "0.5"
   container-memory = "1.5"
+  sidecar-name = "nginx"
+  sidecar-image = "nginx"
+  sidecar-cpu = "1.0"
+  sidecar-memory = "1.5"
+  sidecar-volume-name = "nginx-config"
+  sidecar-volume-mount-path = "/etc/nginx"
+  sidecar-volume-sa-name = var.apid-storage-account-name
+  sidecar-volume-sa-key = module.storage-apid.access-key
+  sidecar-volume-share-name = var.apid-storage-share-name
 }
 
 module "appgw-apid" {
@@ -45,7 +54,19 @@ module "appgw-apid" {
   listener = "public"
   backend-ips = [module.apid-aci.ip-address]
   backend-fqdns = null
+  pfx-certificate = "scripts/ssl.pfx"
+  pfx-password = "dacloud"
   target-host = var.apid-target-host
+  backend-ca-certificate = "ssl/rootCA.crt"
+  probe-hostname = var.apid-target-host
+}
+
+module "storage-apid" {
+  source = "./modules/storage"
+  location = var.location
+  resource-group = azurerm_resource_group.poc-netop-rg.name
+  storage-name = var.apid-storage-account-name
+  share-name = var.apid-storage-share-name
 }
 
 #### AFA RESOURCES ####
@@ -85,8 +106,12 @@ module "appgw-afa" {
   fe-private-ip = var.afa-appgw-private-ip
   listener = "private"
   backend-ips = [module.appgw-apid.public-ip]
-  backend-fqdns = null 
+  backend-fqdns = null
+  pfx-certificate = "ssl/*.vnet-tribe.afa.azure.extraxa.pfx"
+  pfx-password = "dacloud"
   target-host = var.apid-target-host
+  backend-ca-certificate = "ssl/rootCA.crt"
+  probe-hostname = "hello.aci1.apid.vnet-tribe.afa.azure.extraxa"
 }
 
 module "afa-dns" {

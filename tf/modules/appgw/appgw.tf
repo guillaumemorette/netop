@@ -43,9 +43,22 @@ resource "azurerm_application_gateway" "network" {
     subnet_id = azurerm_subnet.gw-subnet.id
   }
 
+  # SSL Termination certificate & key (pfx)
+  ssl_certificate {
+    name     = "certificate"
+    data     = filebase64(var.pfx-certificate)
+    password = var.pfx-password
+  }
+
+  # Trusted root certificate used for backend authentication (only in SKU V2)
+  trusted_root_certificate {
+    name    = "backend-ca-cert"
+    data    = filebase64(var.backend-ca-certificate)
+  }
+
   frontend_port {
     name = "FrontEnd-Port"
-    port = 80
+    port = 443
   }
 
   frontend_ip_configuration {
@@ -71,20 +84,33 @@ resource "azurerm_application_gateway" "network" {
     fqdns        = var.backend-fqdns
   }
   
+  probe {
+  host                = var.probe-hostname
+  interval            = 30
+  name                = "backend-probe"
+  protocol            = "https"
+  path                = "/"
+  timeout             = 5
+  unhealthy_threshold = 2
+  }
+
   backend_http_settings {
-    name                  = "BackendHTTPSettings"
-    cookie_based_affinity = "Disabled"
-    port                  = 80
-    protocol              = "Http"
-    host_name             = var.target-host
-    request_timeout       = 5
+    name                       = "BackendHTTPSettings"
+    cookie_based_affinity      = "Disabled"
+    port                       = 443
+    protocol                   = "Https"
+    host_name                  = var.target-host
+    request_timeout            = 5
+    trusted_root_certificate_names = ["backend-ca-cert"]
+    probe_name                 =  "backend-probe"
   }
 
   http_listener {
     name                           = local.listener-name
     frontend_ip_configuration_name = "ingress-ip-config"
     frontend_port_name             = "FrontEnd-Port"
-    protocol                       = "Http"
+    protocol                       = "Https"
+    ssl_certificate_name           = "certificate"
     host_name                      = var.target-host
   }
 

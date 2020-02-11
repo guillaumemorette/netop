@@ -14,6 +14,10 @@ apid-appgw-private-ip = "10.1.2.10"
 
 apid-target-host = "hello.aci1.apid.vnet-tribe.afa.azure.extraxa"
 
+apid-storage-account-name = "gm47nginxstorage"
+
+apid-storage-share-name = "nginxshare"
+
 
 #### AFA definition ###
 

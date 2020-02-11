@@ -10,6 +10,9 @@ variable apid-target-host {
     description = "The host name to redirect to the ACI instance"
 }
 
+variable apid-storage-account-name {}
+variable apid-storage-share-name {}
+
 variable afa-vnet-cidr {}
 variable afa-subnet-cidr {}
 variable afa-appgw-subnet-cidr {}
