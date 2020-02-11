@@ -43,6 +43,7 @@ module "apid-aci" {
   sidecar-volume-share-name = var.apid-storage-share-name
 }
 
+/*
 module "appgw-apid" {
   source = "./modules/appgw"
   name = "apid-gw"
@@ -60,6 +61,7 @@ module "appgw-apid" {
   backend-ca-certificate = "ssl/rootCA.crt"
   probe-hostname = var.apid-target-host
 }
+*/
 
 module "storage-apid" {
   source = "./modules/storage"
@@ -96,6 +98,7 @@ module "bastion" {
   subnet-prefix = var.afa-bastion-cidr
 }
 
+/*
 module "appgw-afa" {
   source = "./modules/appgw"
   name = "afa-gw"
@@ -113,6 +116,7 @@ module "appgw-afa" {
   backend-ca-certificate = "ssl/rootCA.crt"
   probe-hostname = "hello.aci1.apid.vnet-tribe.afa.azure.extraxa"
 }
+*/
 
 module "afa-dns" {
   source = "./modules/dns-zone"
@@ -123,6 +127,7 @@ module "afa-dns" {
   dns-record-ip = var.afa-appgw-private-ip
 }
 
+/*
 module "firewall" {
   source = "./modules/nsg"
   resource-group = azurerm_resource_group.poc-netop-rg.name
@@ -130,3 +135,4 @@ module "firewall" {
   gw-ip-address = module.appgw-afa.public-ip
   subnet-id = module.appgw-apid.subnet-id
 }
+*/
